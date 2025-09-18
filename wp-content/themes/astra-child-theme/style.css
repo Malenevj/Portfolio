@@ -1,0 +1,222 @@
+/**
+Theme Name: Astra Child Theme
+Theme URI: https://wpastra.com/
+Author: Malene Jonassen
+Author URI: https://portfolio.mjwebdesigns.dk/
+Description: The Astra WordPress theme is based upon the original Astra Mother Theme in Wordpress. This Astra Child Theme is lightning-fast and higly customizable theme. 
+Template: astra
+Version: 0.5
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: astra
+*/
+
+
+
+/*----------------------- Styling af projekt- og kontakt-slider -----------------------*/
+
+/* 1) Animeret bevægelse: "left" kører mod venstre, "right" kører fra højre ind */
+@keyframes marquee-left  {
+  /* start: stå i normal position (x=0), men centrer vertikalt (-50%) */
+  from { transform: translate(0,   -50%); }
+  /* slut: flyt hele tekstbåndet -100% mod venstre (ud af synet) */
+  to   { transform: translate(-100%, -50%); }
+}
+
+@keyframes marquee-right {
+  /* start: stå lige udenfor til højre (x=100%), centrer vertikalt */
+  from { transform: translate(100%, -50%); }
+  /* slut: glid ind til normal position (x=0) */
+  to   { transform: translate(0,    -50%); }
+}
+
+
+/* 2) Selve "rammen" – herinde ruller teksten */
+.proj-marquee-css,
+.contact-marquee-css {
+  position: relative;   /* gør det muligt at placere ::before/::after inde i boksen */
+  overflow: hidden;     /* alt der ruller udenfor kanten bliver skjult */
+  width: 100%;          /* fylder hele bredden */
+  line-height: 1;       /* stram linjehøjde (undgår "hop") */
+}
+
+/* Skjul den almindelige heading-tekst (vi viser i stedet CSS-teksten)
+   - Godt for SEO/skærmlæsere, for teksten findes stadig i HTML */
+.proj-marquee-css .elementor-heading-title,
+.contact-marquee-css .elementor-heading-title {
+  text-indent: -9999px;  /* skub teksten langt væk, så den ikke ses */
+}
+
+
+/* 3) Fælles opsætning for de to tekst-bånd (::before og ::after)
+   - Tænk dem som to "lag" tekst, der kører forbi */
+.proj-marquee-css::before,
+.proj-marquee-css::after,
+.contact-marquee-css::before,
+.contact-marquee-css::after {
+  position: absolute;         /* fri placering inde i rammen */
+  top: 50%;                   /* læg dem midt på højden */
+  transform: translateY(-50%);/* fin-centrér dem præcis i højden */
+  white-space: nowrap;        /* teksten må ikke bryde linje (skal være i én linje) */
+  font-weight: 700;           /* gør teksten fed */
+}
+
+
+/* 4) Startposition + animation
+   - ::before: starter i venstre side og kører mod venstre (left)
+   - ::after: starter udenfor til højre og glider ind (right)
+   - --speed kan sættes på elementet i Elementor (Custom CSS), fx: --speed: 14s; */
+.proj-marquee-css::before,
+.contact-marquee-css::before {
+  transform: translate(0, -50%);
+  animation: marquee-left var(--speed, 18s) linear infinite; /* kør for evigt i samme fart */
+}
+
+.proj-marquee-css::after,
+.contact-marquee-css::after {
+  transform: translate(100%, -50%);
+  animation: marquee-right var(--speed, 18s) linear infinite;
+}
+
+
+/* 5) Variant 1: PROJEKTER
+   - content = selve teksten, gentaget mange gange med "•" imellem.
+   - --proj-color og --proj-size kan du overstyre pr. sektion, hvis du vil. */
+.proj-marquee-css::before,
+.proj-marquee-css::after {
+  content: "Projekter • Projekter • Projekter • Projekter • Projekter • Projekter • Projekter • Projekter • Projekter • Projekter • ";
+  color: var(--proj-color, #000080);                    /* standard = mørk blå */
+  font-size: var(--proj-size, clamp(28px, 5vw, 56px));  /* responsiv størrelse: min 28px, max 56px */
+}
+
+
+/* 6) Variant 2: KONTAKT
+   - samme princip som ovenfor, men med en anden tekst (content). */
+.contact-marquee-css::before,
+.contact-marquee-css::after {
+  content: "Kontakt mig her • Kontakt mig her • Kontakt mig her • Kontakt mig her • Kontakt mig her • ";
+  color: var(--contact-color, #000080);
+  font-size: var(--contact-size, clamp(28px, 5vw, 56px));
+}
+
+/*----------------------- Styling af Hero pilen -----------------------*/
+
+/* Hero-sektionen gøres "relative",
+   så vi kan placere pilen inde i den */
+.hero-scroll {
+  position: relative;
+}
+
+/* Den nederste pil (chevron) */
+.hero-scroll::after {
+  content: "";                                 /* laver et usynligt element, vi kan style */
+  position: absolute;                          /* placerer pilen frit ovenpå hero-sektionen */
+  left: 50%;                                   /* centrerer pilen vandret */
+  top: calc(100% - 12vh);                      /* placerer pilen tæt på bunden */
+  width: 32px;                                 /* pilens bredde */
+  height: 32px;                                /* pilens højde */
+  transform: translateX(-50%) rotate(45deg);   /* flytter pilen på plads og drejer den 45 grader */
+  border-right: 6px solid #ffffff;             /* højre kant = én streg af pilen (hvid, 6px tyk) */
+  border-bottom: 6px solid #ffffff;            /* nederste kant = anden streg af pilen */
+  z-index: 5;                                  /* sørger for pilen altid ligger øverst */
+  pointer-events: none;                        /* pilen kan ikke klikkes */
+  animation: scroll-bounce 1.6s ease-in-out infinite; /* tilføjer hoppe-animation i et loop */
+}
+
+/* Den øverste ekstra pil */
+.hero-scroll::before {
+  content: "";                                 /* igen et tomt element */
+  position: absolute;
+  left: 50%;                                   /* samme centrering som den anden pil */
+  top: calc(100% - 14vh);                      /* lidt højere op end den nederste pil */
+  width: 32px;
+  height: 32px;
+  transform: translateX(-50%) rotate(45deg);   /* samme rotation som nedenfor */
+  border-right: 6px solid #ffffff;             /* højre streg */
+  border-bottom: 6px solid #ffffff;            /* nederste streg */
+  opacity: 0.6;                                /* gør denne pil mere gennemsigtig */
+  animation: scroll-bounce 1.6s ease-in-out infinite; /* samme hoppe-animation */
+  animation-delay: 0.15s;                      /* starter lidt forskudt for at give en "flow-effekt" */
+}
+
+/* Selve animationen (keyframes)
+   Pilen bevæger sig lidt ned og op igen */
+@keyframes scroll-bounce {
+  0%   { transform: translate(-50%, 0) rotate(45deg); }   /* pilen starter i neutral position */
+  50%  { transform: translate(-50%, 8px) rotate(45deg); } /* pilen flyttes 8px ned = hop */
+  100% { transform: translate(-50%, 0) rotate(45deg); }   /* pilen hopper tilbage til start */
+}
+
+
+/*----------------------- Styling af knapperne  -----------------------*/
+
+/* Standard-styling for Elementor-knapper */
+.elementor-button,
+.elementor-button-link,
+.elementor a.elementor-button,
+.elementor a.elementor-button-link {
+  background-color: #01007F !important;   /* giver knappen en blå baggrund (primær farve) */
+  background-image: none !important;      /* fjerner evt. gradienter */
+  color: #ffffff !important;              /* hvid tekst */
+  border: 1px solid #01007F !important;   /* blå kant om knappen */
+  text-decoration: none !important;       /* ingen understregning */
+  transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease !important; 
+  /* smooth overgang når man hover */
+}
+
+/* Hvis linket er besøgt */
+.elementor a.elementor-button:visited,
+.elementor a.elementor-button-link:visited {
+  color: #ffffff !important;              /* holder teksten hvid også på besøgte links */
+}
+
+/* Når man hover eller tabber (focus) på knappen */
+.elementor-button:hover,
+.elementor-button-link:hover,
+.elementor a.elementor-button:hover,
+.elementor a.elementor-button-link:hover,
+.elementor-button:focus,
+.elementor-button-link:focus,
+.elementor a.elementor-button:focus,
+.elementor a.elementor-button-link:focus {
+  background-color: #2321FF !important;   /* gør knappen lysere blå */
+  border-color: #2321FF !important;       /* kant matcher baggrund */
+  color: #ffffff !important;              /* holder teksten hvid */
+  transform: scale(1.06) !important;      /* knappen vokser lidt */
+  box-shadow: 0 8px 18px rgba(1,0,127,.25) !important; /* giver en skygge = “løftet effekt” */
+  outline: none !important;               /* fjerner standard fokusramme */
+}
+
+/* Når man trykker fysisk på knappen */
+.elementor-button:active,
+.elementor-button-link:active,
+.elementor a.elementor-button:active,
+.elementor a.elementor-button-link:active {
+  transform: scale(.96) !important;       /* knappen bliver en anelse mindre (tryk-feedback) */
+  box-shadow: 0 4px 10px rgba(1,0,127,.2) !important; /* skyggen bliver mindre */
+}
+
+
+/*----------------------- Styling på projeksiden af de forskellige billeder -----------------------*/
+
+/* Containeren rundt om hvert projektbillede */
+.proj-card {
+  position: relative;                     /* gør at man kan styre elementer inde i boksen */
+  display: inline-block;                  /* kortene står på linje men som blokke */
+  border-radius: 20px;                    /* afrundede hjørner */
+  overflow: visible;                      /* skygge kan stikke udenfor boksen */
+  transition: transform .35s ease, box-shadow .35s ease, filter .35s ease; 
+  /* smooth overgang når man hover */
+  will-change: transform, box-shadow, filter; /* optimerer performance ved animation */
+}
+
+/* Når man hover over kortet */
+.proj-card:hover {
+  transform: translateY(-8px);            /* kortet løfter sig op */
+  filter: saturate(1.02);                 /* farverne bliver lidt stærkere */
+}
+
+/* Når man hover, animeres billedet inde i kortet */
+.proj-card:hover img {
+  transform: scale(1.03) rotateZ(-.6deg); /* billedet zoomer ind og vipper lidt */
+}
