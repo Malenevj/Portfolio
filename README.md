@@ -1,0 +1,1 @@
+Jeg har ikke uploaded Astra parent theme til GitHub, da det ligger under copyright/licenser og ikke er mit eget arbejde. Parent themes kan hentes direkte fra WordPress, så her har jeg kun lagt mit eget child theme op, hvor mine ændringer og tilpasninger ligger.
